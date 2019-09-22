@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_image_placeholder"
+        android:layout_above="@+id/txt_title"
+        android:scaleType="centerCrop"
+        android:id="@+id/img_poster"/>
+
+    <TextView
+        android:id="@+id/txt_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:layout_marginTop="@dimen/movie_top_margin"
+        android:ellipsize="end"
+        android:padding="3dp"
+        style="@style/movie_name"
+        android:layout_alignParentBottom="true"
+        />
+
+</RelativeLayout>

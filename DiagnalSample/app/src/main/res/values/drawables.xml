@@ -1,0 +1,4 @@
+<resources>
+    <item name="ic_left_arrow" type="drawable">@drawable/ic_left_arrow</item>
+    <item name="ic_search" type="drawable">@drawable/ic_search</item>
+</resources>
