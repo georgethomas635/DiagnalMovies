@@ -10,6 +10,8 @@ public interface MainActivityContracts {
 
     interface View {
         void setAdapter(ArrayList<Movie> list);
+        
+        void setcolumSize();
     }
 
     interface Presenter extends BasePresenter<View>{

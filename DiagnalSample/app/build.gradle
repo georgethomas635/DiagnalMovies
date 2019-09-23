@@ -45,7 +45,4 @@ dependencies {
     // Required -- JUnit 4 framework
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.7.22'
-
-    //Jackson
-    implementation 'com.squareup.retrofit2:converter-jackson:2.4.0'
 }
