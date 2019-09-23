@@ -42,9 +42,6 @@ public class MainActivityPresenterTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-//        resources = ApplicationProvider.getApplicationContext().getResources();
-//        assetManager = resources.getAssets();
-
         presenter = new MainActivityPresenter();
         presenter.attach(view);
     }
