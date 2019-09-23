@@ -30,6 +30,31 @@
             android:background="@drawable/nav_bar"
             android:id="@+id/rlv_nav_bar">
 
+            <EditText
+                android:id="@+id/etxt_search"
+                style="@style/heading"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/img_search"
+                android:layout_width="match_parent"
+                android:layout_toEndOf="@+id/img_back"
+                android:hint="@string/search"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textColorHint="@color/color_white"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/img_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_search"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:padding="5dp"
+                android:layout_marginEnd="5dp"
+                tools:ignore="ContentDescription" />
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -37,34 +62,25 @@
                 android:layout_centerVertical="true"
                 android:padding="5dp"
                 android:id="@+id/img_back"
-                android:layout_marginStart="5dp"/>
-
+                android:layout_marginStart="5dp"
+                tools:ignore="ContentDescription" />
             <TextView
                 android:id="@+id/txt_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/color_white"
-                android:layout_centerVertical="true"
-                android:textSize="18sp"
-                android:fontFamily="@font/titilliumweb_light"
-                android:layout_marginStart="5dp"
+                style="@style/heading"
                 android:text="@string/romantic_comedy"
                 android:layout_toEndOf="@+id/img_back"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_search"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:padding="5dp"
-                android:layout_marginEnd="5dp"/>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/txt_title"
-                android:background="@drawable/shadow"/>
         </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txt_empty_list"
+            style="@style/heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/result_not_found"
+            android:visibility="gone" />
 
     </RelativeLayout>
 

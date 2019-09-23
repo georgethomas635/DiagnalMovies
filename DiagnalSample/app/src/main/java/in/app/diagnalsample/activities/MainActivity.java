@@ -3,9 +3,13 @@ package in.app.diagnalsample.activities;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
-import android.os.PersistableBundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,14 +46,21 @@ private int maxPageCount = 3;
 private GridLayoutManager layoutManager;
 private MainActivityPresenter mPresenter;
 private int coloumSize;
+@BindView(R.id.etxt_search)
+EditText etxtSearch;
 private ArrayList<Movie> movies;
-private Parcelable mListState;
+@BindView(R.id.txt_title)
+TextView txtTitle;
 
 
 @BindView(R.id.recycler_view)
 RecyclerView recyclerView;
-
-
+@BindView(R.id.txt_empty_list)
+TextView txtErromMessage;
+@BindView(R.id.img_search)
+ImageView imgSearch;
+private int textMinLength = 3;
+private ArrayList<Movie> searchResult;
 
 @Override
 protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +71,78 @@ protected void onCreate(Bundle savedInstanceState) {
     initPresenter();
     setcolumSize();
     setRecyclerView();
-    setAdapter(mPresenter.getMovieList(String.valueOf(pageCount), getAssets()));
+    setListener();
+    movies = mPresenter.getMovieList(String.valueOf(pageCount), getAssets());
+    setAdapter(movies);
     
+}
+
+private void setListener() {
+    setEditorActionListener();
+    etxtSearch.addTextChangedListener(new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        
+        }
+        
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        
+        }
+        
+        @Override
+        public void afterTextChanged(Editable s) {
+            if(s.length() >= textMinLength){
+                searchFor(s.toString());
+            }
+        }
+    });
+}
+
+/**
+ * Set the error message for the search bar
+ */
+private void setEditorActionListener() {
+    etxtSearch.setOnEditorActionListener((v, actionId, event) -> {
+        if(etxtSearch.getText().length() < textMinLength){
+            etxtSearch.setError(getResources().getText(R.string.write_minimum_charecters));
+            return true;
+        }
+        return false;
+    });
+}
+
+/**
+ * Searching for a movie name in the list.
+ *
+ * @param searchId : Search keyword
+ */
+private void searchFor(String searchId) {
+    searchResult = new ArrayList<>();
+    for(Movie item : movies){
+        if(item.getName().toLowerCase().contains(searchId.toLowerCase())){
+            searchResult.add(item);
+        }
+    }
+    if(searchResult.size() > Constants.ZERO){
+        modifyMovieList(searchResult);
+    }else{
+        emptyMovieList(true);
+        adapter.clear();
+        Toast.makeText(this, getResources().getString(R.string.result_not_found), Toast.LENGTH_SHORT).show();
+    }
+}
+
+/**
+ * Modify the list of movies
+ *
+ * @param movies: List of movies
+ */
+private void modifyMovieList(ArrayList<Movie> movies) {
+    emptyMovieList(false);
+    adapter.clear();
+    adapter.addAll(movies);
+    adapter.notifyDataSetChanged();
 }
 
 @Override
@@ -71,6 +152,19 @@ public void setcolumSize() {
     }else{
         coloumSize = Constants.COLOUM_SIZE_LANDSCAPE;
     }
+}
+
+@Override
+public void showSearchField(Boolean visibility) {
+    etxtSearch.setVisibility(visibility ? View.VISIBLE : View.GONE);
+    txtTitle.setVisibility(visibility ? View.GONE : View.VISIBLE);
+    imgSearch.setImageDrawable(visibility ? getResources().getDrawable(R.drawable.ic_close_white) :
+            getResources().getDrawable(R.drawable.ic_search));
+}
+
+@Override
+public void emptyMovieList(Boolean visibility) {
+    txtErromMessage.setVisibility(visibility ? View.VISIBLE : View.GONE);
 }
 
 private void initPresenter() {
@@ -87,11 +181,15 @@ protected void onDestroy() {
     super.onDestroy();
 }
 
+/**
+ * Seting up the Recycler view with GridLayout
+ */
 private void setRecyclerView() {
     layoutManager = new GridLayoutManager(this, coloumSize);
     recyclerView.addItemDecoration(new RecyclerViewMargin(Constants.RECYCLERVIEW_MARGIN, coloumSize));
     recyclerView.setLayoutManager(layoutManager);
 }
+
 /**
  * Create the recyclerview adapter with fixed three coloums
  *
@@ -164,7 +262,7 @@ private void loadMoreMovieItems() {
             isLastPage = true;
             adapter.removeFooter();
         }
-        movies=mPresenter.getMovieList(String.valueOf(pageCount), getAssets());
+        movies.addAll(mPresenter.getMovieList(String.valueOf(pageCount), getAssets()));
         adapter.addAll(movies);
         isLoading = false;
     }, Constants.TIME_DELAY);
@@ -174,6 +272,16 @@ private void loadMoreMovieItems() {
 @OnClick(R.id.img_back)
 void onBackArrowPress() {
     onBackPressed();
+}
+
+
+@OnClick(R.id.img_search)
+void onSearchIconClicked() {
+    if(etxtSearch.getVisibility() == View.VISIBLE){
+        modifyMovieList(movies);
+        etxtSearch.setText(Constants.EMPTY);
+    }
+    showSearchField(etxtSearch.getVisibility() == View.GONE);
 }
 
 @Override

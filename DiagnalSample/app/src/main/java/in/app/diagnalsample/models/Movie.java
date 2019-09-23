@@ -12,7 +12,7 @@ public class Movie implements Parcelable {
 public Movie() {
 }
 
-protected Movie(Parcel in) {
+private Movie(Parcel in) {
     name = in.readString();
     posterImage = in.readString();
 }
@@ -55,4 +55,6 @@ public void writeToParcel(Parcel dest, int flags) {
     dest.writeString(name);
     dest.writeString(posterImage);
 }
+
+
 }

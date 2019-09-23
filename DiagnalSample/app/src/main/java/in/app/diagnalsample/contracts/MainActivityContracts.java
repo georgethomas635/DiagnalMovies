@@ -12,6 +12,10 @@ public interface MainActivityContracts {
         void setAdapter(ArrayList<Movie> list);
         
         void setcolumSize();
+    
+        void showSearchField(Boolean visibility);
+    
+        void emptyMovieList(Boolean visibility);
     }
 
     interface Presenter extends BasePresenter<View>{

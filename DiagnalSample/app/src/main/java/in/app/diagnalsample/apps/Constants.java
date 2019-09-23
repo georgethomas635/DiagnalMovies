@@ -15,4 +15,5 @@ public class Constants {
     public static final int RECYCLERVIEW_MARGIN = 30;
     public static final long TIME_DELAY = 2000;
     public static final int TOTAL_ITEM_COUNT = 20;
+public static final String EMPTY = "";
 }
