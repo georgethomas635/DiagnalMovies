@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 
-import androidx.test.core.app.ApplicationProvider;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,9 +19,8 @@ import in.app.diagnalsample.contracts.MainActivityContracts;
 import in.app.diagnalsample.models.Movie;
 
 import static in.app.diagnalsample.apps.Constants.PAGE;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class MainActivityPresenterTest {
 
@@ -44,9 +41,9 @@ public class MainActivityPresenterTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-    
-        resources = ApplicationProvider.getApplicationContext().getResources();
-        assetManager = resources.getAssets();
+
+//        resources = ApplicationProvider.getApplicationContext().getResources();
+//        assetManager = resources.getAssets();
 
         presenter = new MainActivityPresenter();
         presenter.attach(view);
@@ -91,7 +88,8 @@ public class MainActivityPresenterTest {
 
     @Test
     public void readJSONFromAsset() {
-        String json=presenter.readJSONFromAsset("1",resources.getAssets());
+    
+        String json = presenter.readJSONFromAsset("1", context.getAssets());
         assertEquals(json,PAGE1_JSON);
     }
 }
