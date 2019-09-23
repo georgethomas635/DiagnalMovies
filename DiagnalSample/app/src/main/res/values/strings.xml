@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Diagnal Sample</string>
     <string name="romantic_comedy">Romantic Comedy</string>
+    <string name="search">Search</string>
+    <string name="write_minimum_charecters">Please write minimum 3 characters</string>
+    <string name="result_not_found">Result not found</string>
 </resources>

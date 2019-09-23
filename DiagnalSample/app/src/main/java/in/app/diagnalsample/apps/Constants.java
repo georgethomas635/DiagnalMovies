@@ -10,8 +10,10 @@ public class Constants {
     public static final String FILE_NAME = "data/CONTENTLISTINGPAGE-PAGE";
     public static final String JSON_EXTENSION = ".json";
     public static final int COLOUM_SIZE = 3;
+    public static final int COLOUM_SIZE_LANDSCAPE = 7;
     public static final int ZERO = 0;
     public static final int RECYCLERVIEW_MARGIN = 30;
     public static final long TIME_DELAY = 2000;
     public static final int TOTAL_ITEM_COUNT = 20;
+public static final String EMPTY = "";
 }

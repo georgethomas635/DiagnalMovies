@@ -2,9 +2,9 @@ package in.app.diagnalsample.presenters.activities;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import androidx.test.core.app.ApplicationProvider;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,16 +36,17 @@ public class MainActivityPresenterTest {
 
     @Mock
     AssetManager assetManager;
-
+    private Resources resources;
+    
     @Mock
     Context context;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-
-        MockitoAnnotations.initMocks(this);//create all @Mock objetcs
-        doReturn(assetManager).when(context).getAssets();
+    
+        resources = ApplicationProvider.getApplicationContext().getResources();
+        assetManager = resources.getAssets();
 
         presenter = new MainActivityPresenter();
         presenter.attach(view);
@@ -90,7 +91,7 @@ public class MainActivityPresenterTest {
 
     @Test
     public void readJSONFromAsset() {
-        String json=presenter.readJSONFromAsset("1",assetManager);
+        String json=presenter.readJSONFromAsset("1",resources.getAssets());
         assertEquals(json,PAGE1_JSON);
     }
 }

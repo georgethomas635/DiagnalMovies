@@ -140,7 +140,6 @@ public class MovieListAdapter extends BaseAdapter<Movie> {
     @Override
     protected void bindFooterViewHolder(RecyclerView.ViewHolder viewHolder) {
         footerViewHolder = (FooterViewHolder) viewHolder;
-        //holder.loadingImageView.setMaskOrientation(LoadingImageView.MaskOrientation.LeftToRight);
     }
 
     @Override
