@@ -36,10 +36,9 @@ import static in.app.diagnalsample.apps.Constants.EMPTY;
 public class MainActivity extends AppCompatActivity implements
         MovieListAdapter.OnItemClickListener, MovieListAdapter.OnReloadClickListener, MainActivityContracts.View {
 
-private static final String BUNDLE_MOVIES_KEY = "Movie List";
-private static final String BUNDLE_SEARCH_MOVIES = "Serched Movie List";
+
 private static final String SEARCH_KEY = "Search";
-private static final String PAGE_COUNT_KEY = "Page Count";
+public static final String PAGE_COUNT_KEY = "Page Count";
 
 private Unbinder unbinder;
 private MovieListAdapter adapter;
@@ -51,8 +50,6 @@ private GridLayoutManager layoutManager;
 private MainActivityPresenter mPresenter;
 private int coloumSize;
 private int textMinLength = 3;
-private ArrayList<Movie> searchResult;
-private ArrayList<Movie> movies;
 
 @BindView(R.id.etxt_search)
 EditText etxtSearch;
@@ -80,21 +77,7 @@ protected void onCreate(Bundle savedInstanceState) {
     setcolumSize();
     setRecyclerView();
     setListener();
-    handleRotation(savedInstanceState);
-}
-
-private void handleRotation(Bundle savedInstanceState) {
-    if(savedInstanceState == null){
-        movies = mPresenter.getMovieList(String.valueOf(pageCount), getAssets());
-        setAdapter(movies);
-    }else if(etxtSearch.getVisibility() == View.VISIBLE){
-        movies = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIES_KEY);
-        searchResult = savedInstanceState.getParcelableArrayList(BUNDLE_SEARCH_MOVIES);
-        setAdapter(searchResult);
-    }else{
-        movies = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIES_KEY);
-        setAdapter(movies);
-    }
+    mPresenter.handleRotation(savedInstanceState, etxtSearch.getVisibility(), pageCount, getAssets());
 }
 
 @Override
@@ -117,6 +100,12 @@ public void showSearchField(Boolean visibility) {
 @Override
 public void emptyMovieList(Boolean visibility) {
     txtErromMessage.setVisibility(visibility ? View.VISIBLE : View.GONE);
+}
+
+@Override
+public void showErrorMessage(int messageId) {
+    Toast.makeText(this, getResources().getString(messageId), Toast.LENGTH_SHORT).show();
+    
 }
 
 @Override
@@ -150,11 +139,9 @@ protected void onSaveInstanceState(final Bundle savedInstanceState) {
  */
 private void saveSearchStatus(Bundle savedInstanceState) {
     if(etxtSearch.getVisibility() == View.VISIBLE){
-        savedInstanceState.putParcelableArrayList(BUNDLE_SEARCH_MOVIES, searchResult);
-        savedInstanceState.putParcelableArrayList(BUNDLE_MOVIES_KEY, movies);
-    }else{
-        savedInstanceState.putParcelableArrayList(BUNDLE_MOVIES_KEY, movies);
+        savedInstanceState.putParcelableArrayList(Constants.BUNDLE_SEARCH_MOVIES, mPresenter.getSearchResult());
     }
+    savedInstanceState.putParcelableArrayList(Constants.BUNDLE_MOVIES_KEY, mPresenter.getMovies());
 }
 
 @Override
@@ -188,7 +175,7 @@ private void setListener() {
         @Override
         public void afterTextChanged(Editable s) {
             if(s.length() >= textMinLength){
-                searchFor(s.toString());
+                mPresenter.searchFor(s.toString());
             }
         }
     });
@@ -207,26 +194,6 @@ private void setEditorActionListener() {
     });
 }
 
-/**
- * Searching for a movie name in the list.
- *
- * @param searchId : Search keyword
- */
-private void searchFor(String searchId) {
-    searchResult = new ArrayList<>();
-    for(Movie item : movies){
-        if(item.getName().toLowerCase().contains(searchId.toLowerCase())){
-            searchResult.add(item);
-        }
-    }
-    if(searchResult.size() > Constants.ZERO){
-        modifyMovieList(searchResult);
-    }else{
-        emptyMovieList(true);
-        adapter.clear();
-        Toast.makeText(this, getResources().getString(R.string.result_not_found), Toast.LENGTH_SHORT).show();
-    }
-}
 
 // endregion MO
 
@@ -264,7 +231,7 @@ public void setAdapter(ArrayList<Movie> list) {
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(recyclerViewOnScrollListener);
     }else{
-        adapter.clear();
+        clearAdapter();
     }
     adapter.addAll(list);
 }
@@ -320,7 +287,6 @@ private void loadMoreMovieItems() {
             }
             ArrayList<Movie> movieLisy = mPresenter.getMovieList(String.valueOf(pageCount), getAssets());
             adapter.addAll(movieLisy);
-            movies.addAll(movieLisy);
             isLoading = false;
         }, Constants.TIME_DELAY);
     }
@@ -330,7 +296,7 @@ private void loadMoreMovieItems() {
 //endregion
 
 @OnClick(R.id.img_back)
-void onBackArrowPress() {
+void onBackArrowPressed() {
     onBackPressed();
 }
 
@@ -338,7 +304,7 @@ void onBackArrowPress() {
 @OnClick(R.id.img_search)
 void onSearchIconClicked() {
     if(etxtSearch.getVisibility() == View.VISIBLE){
-        modifyMovieList(movies);
+        modifyMovieList(mPresenter.getMovies());
         etxtSearch.setText(EMPTY);
     }
     showSearchField(etxtSearch.getVisibility() == View.GONE);
@@ -359,13 +325,22 @@ public void onReloadClick() {
  *
  * @param movies: List of movies
  */
-private void modifyMovieList(ArrayList<Movie> movies) {
+@Override
+public void modifyMovieList(ArrayList<Movie> movies) {
     emptyMovieList(false);
     if(adapter != null){
-        adapter.clear();
+        clearAdapter();
         adapter.addAll(movies);
         adapter.notifyDataSetChanged();
     }
+}
+
+@Override
+public void clearAdapter() {
+    if(adapter != null){
+        adapter.clear();
+    }
+    
 }
     
     
